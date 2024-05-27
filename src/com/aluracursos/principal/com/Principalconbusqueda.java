@@ -1,6 +1,8 @@
 package com.aluracursos.principal.com;
 
-import java.io.BufferedReader;
+
+import Currency.Currency;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,14 +12,24 @@ import java.util.Scanner;
 
 public class Principalconbusqueda {
     public static void main(String[] args) throws IOException, InterruptedException {
-        int option = 0;
+        Currency miCurrency = new Currency();
+        miCurrency.setOption(0);
         Scanner lectura1 = new Scanner(System.in);
         System.out.println("Bienvenido a Interchange Currency Platform");
         System.out.println("Tienes dolares USD o colones CRC, escriba USD o CRC ?");
-        String tipoMonedaQueConservas = lectura1.nextLine();
+        miCurrency.setMonedaACambiar(lectura1.nextLine());
         Scanner lectura2 =new Scanner(System.in);
+        //  Esto es para un mensaje sobre el tipo de moneda que se selecciono.
+//        if (miCurrency.monedaACambiar=="USD"){
+//            System.out.println("Has seleccionado Dolares.");
+//        } else if (miCurrency.monedaACambiar=="CRC") {
+//            System.out.println("Has seleccionado Colones.");
+//        }else {
+//            System.out.println("No se selecciono el tipo de moneda solicitada");
+//
+//        }
         System.out.println("Ingrese el monto a cambiar:");
-        double montoACambiar = lectura2.nextDouble();
+        miCurrency.setMonto(lectura2.nextDouble());
 
         String opcionesTipoCambio = """
                Seleccione el tipo de moneda al que desea cambiar:
@@ -28,22 +40,30 @@ public class Principalconbusqueda {
                9-SALIR
                """;
         Scanner lectura3 = new Scanner(System.in);
-        while (option != 9){
+        while (miCurrency.getOption()!= 9){
             System.out.println(opcionesTipoCambio);
-            option = lectura3.nextInt();
+            miCurrency.setOption(lectura3.nextInt());
 
-            switch (option){
+            switch (miCurrency.getOption()){
                 case 1:
-                    System.out.println("El monto en Dolares es :"+montoACambiar*1+" USD");
+                    miCurrency.setSiglasMoneda("USD");
+                    miCurrency.setCambiarALaMoneda("Dolares");
+                    miCurrency.monedaSeleccionada();
                     break;
                 case 2:
-                    System.out.println("El monto en Colones es :"+montoACambiar*2+" CRC");
+                    miCurrency.setSiglasMoneda("CRC");
+                    miCurrency.setCambiarALaMoneda("Colones");
+                    System.out.println("El monto en Colones es :"+miCurrency.getMonto()*2+" CRC");
                     break;
                 case 3:
-                    System.out.println("El monto en Pesos Colombianos es :"+montoACambiar*3+" COL");
+                    miCurrency.setSiglasMoneda("COL");
+                    miCurrency.setCambiarALaMoneda("Pesos Colombianos");
+                    System.out.println("El monto en Pesos Colombianos es :"+miCurrency.getMonto()*3+" COL");
                     break;
                 case 4:
-                    System.out.println("El monto en Pesos Mexicanos es :"+montoACambiar*4+" MXC");
+                    miCurrency.setSiglasMoneda("MXC");
+                    miCurrency.setCambiarALaMoneda("Pesos Mexicanos");
+                    System.out.println("El monto en Pesos Mexicanos es :"+miCurrency.getMonto()*4+" MXC");
                     break;
                 case 9:
                     System.out.println("Haz salido del programa de Interchange Currency Platform");
