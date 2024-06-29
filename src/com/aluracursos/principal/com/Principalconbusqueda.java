@@ -3,33 +3,54 @@ package com.aluracursos.principal.com;
 
 import Currency.Currency;
 
+
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Principalconbusqueda {
+    protected static String monedaEnMano;
+
+    public Principalconbusqueda(String siglasMoneda, String cambiarALaMoneda, double monto, double tipoCambio) {
+        super();}
+
     public static void main(String[] args) throws IOException, InterruptedException {
         Currency miCurrency = new Currency();
         miCurrency.setOption(0);
         Scanner lectura1 = new Scanner(System.in);
         System.out.println("Bienvenido a Interchange Currency Platform");
-        System.out.println("Tienes dolares USD o colones CRC, escriba USD o CRC ?");
-        miCurrency.setMonedaACambiar(lectura1.nextLine());
-        Scanner lectura2 =new Scanner(System.in);
+
+
+
         //  Esto es para un mensaje sobre el tipo de moneda que se selecciono.
-//        if (miCurrency.monedaACambiar=="USD"){
-//            System.out.println("Has seleccionado Dolares.");
-//        } else if (miCurrency.monedaACambiar=="CRC") {
-//            System.out.println("Has seleccionado Colones.");
-//        }else {
-//            System.out.println("No se selecciono el tipo de moneda solicitada");
-//
-//        }
-        System.out.println("Ingrese el monto a cambiar:");
-        miCurrency.setMonto(lectura2.nextDouble());
+        while (true) {
+
+            System.out.println("Tienes dolares USD o colones CRC, escriba USD o CRC ?");
+            monedaEnMano = lectura1.nextLine();
+            if (monedaEnMano.equals("USD")) {
+            System.out.println("Has seleccionado Dolares.");
+                break;
+            } else if (monedaEnMano.equals("CRC")) {
+            System.out.println("Has seleccionado Colones.");
+                break;
+            } else {
+            System.out.println("No se selecciono el tipo de moneda solicitada");
+
+            }
+        }
+        Scanner lectura2 =new Scanner(System.in);
+        while (true) {
+            System.out.println("Ingrese el monto a cambiar:");
+            try {
+                miCurrency.setMonto(lectura2.nextDouble());
+                break; // Salir del bucle si la entrada es un número válido
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor ingrese un número.");
+                lectura2.next(); // Limpiar la entrada no válida
+            }
+        }
+//        System.out.println("Ingrese el monto a cambiar:");
+//        miCurrency.setMonto(lectura2.nextDouble());
 
         String opcionesTipoCambio = """
                Seleccione el tipo de moneda al que desea cambiar:
@@ -40,6 +61,7 @@ public class Principalconbusqueda {
                9-SALIR
                """;
         Scanner lectura3 = new Scanner(System.in);
+
         while (miCurrency.getOption()!= 9){
             System.out.println(opcionesTipoCambio);
             miCurrency.setOption(lectura3.nextInt());
@@ -48,22 +70,33 @@ public class Principalconbusqueda {
                 case 1:
                     miCurrency.setSiglasMoneda("USD");
                     miCurrency.setCambiarALaMoneda("Dolares");
-                    miCurrency.monedaSeleccionada();
+                    miCurrency.setMonedaACambiar("USD");
+                    System.out.println("El monto convertido es: " + CurrencyConvert.convertirMoneda(monedaEnMano, miCurrency));
                     break;
+
                 case 2:
                     miCurrency.setSiglasMoneda("CRC");
                     miCurrency.setCambiarALaMoneda("Colones");
-                    System.out.println("El monto en Colones es :"+miCurrency.getMonto()*2+" CRC");
+//                    miCurrency.setTipoCambio(2);
+                    miCurrency.setMonedaACambiar("CRC");
+//                    miCurrency.monedaSeleccionada();
+                    System.out.println("El monto convertido es: " + CurrencyConvert.convertirMoneda(monedaEnMano, miCurrency));
                     break;
                 case 3:
                     miCurrency.setSiglasMoneda("COL");
                     miCurrency.setCambiarALaMoneda("Pesos Colombianos");
-                    System.out.println("El monto en Pesos Colombianos es :"+miCurrency.getMonto()*3+" COL");
+//                    miCurrency.setTipoCambio(3);
+                    miCurrency.setMonedaACambiar("COP");
+//                    miCurrency.monedaSeleccionada();
+                    System.out.println("El monto convertido es: " + CurrencyConvert.convertirMoneda(monedaEnMano, miCurrency));
                     break;
                 case 4:
-                    miCurrency.setSiglasMoneda("MXC");
+                    miCurrency.setSiglasMoneda("MXN");
                     miCurrency.setCambiarALaMoneda("Pesos Mexicanos");
-                    System.out.println("El monto en Pesos Mexicanos es :"+miCurrency.getMonto()*4+" MXC");
+//                    miCurrency.setTipoCambio(4);
+                    miCurrency.setMonedaACambiar("MXN");
+//                    miCurrency.monedaSeleccionada();
+                    System.out.println("El monto convertido es: " + CurrencyConvert.convertirMoneda(monedaEnMano, miCurrency));
                     break;
                 case 9:
                     System.out.println("Haz salido del programa de Interchange Currency Platform");
@@ -74,16 +107,29 @@ public class Principalconbusqueda {
 
             }
         }
-        var busqueda = lectura1.nextLine();
 
-        String direccion = "https://v6.exchangerate-api.com/v6/e09d49aca7fd771b2761a313/latest/"+busqueda;
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(direccion))
-                .build();
-        HttpResponse<String> response = client
-                .send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+//        String direccion = "https://v6.exchangerate-api.com/v6/e09d49aca7fd771b2761a313/pair/"+monedaEnMano+"/"+miCurrency.getMonedaACambiar();
+////        String direccion = "https://v6.exchangerate-api.com/v6/e09d49aca7fd771b2761a313/pair/CRC/USD";
+//
+//        HttpClient client = HttpClient.newHttpClient();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create(direccion))
+//                .build();
+//        HttpResponse<String> response = client
+//                .send(request, HttpResponse.BodyHandlers.ofString());
+//
+//        String json = response.body();
+//        System.out.println(json);
+//
+//
+//        Gson gson  = new Gson();
+//        TituloOMBD miTituloOMBD = gson.fromJson(json, TituloOMBD.class);
+//
+//
+//
+//        System.out.println(miTituloOMBD.conversion_rate()*miCurrency.getMonto());
+
     }
-}
+
+    }
